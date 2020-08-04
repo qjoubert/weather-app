@@ -1,0 +1,13 @@
+input:focus {
+	outline: none;
+}
+
+input:not([type="submit"]) {
+	&:focus:invalid {
+		border: 2px solid red;
+	}
+
+	&:focus:valid {
+		border: 2px solid green;
+	}
+}
