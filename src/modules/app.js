@@ -1,41 +1,57 @@
-import events from './events';
+import dom from './dom';
 import weatherApi from './weatherApi';
 
 export default (function() {
 
+	function getTypedCity() {
+		return sessionStorage.getItem('typedCityInputVal');
+	}
+
 	function init() {
-		events.addAllEventListeners();
+		dom.initEventListeners();
 	}
 
 	function onFormSubmit(e) {
 		e.preventDefault();
-		const locationInput = e.target.firstElementChild;
-		const location = locationInput.value.toLowerCase();
+		storeTypedCity('');
+		const cityInput = e.target.firstElementChild;
+		const city = cityInput.value.toLowerCase();
+		const cityId = cityInput.getAttribute('data-id');
 
-		locationInput.value = '';
-		locationInput.blur();
+		cityInput.blur();
+		cityInput.value = '';
+		cityInput.setAttribute('data-id', '');
+		dom.clearSuggestions();
 
 		weatherApi
-			.getCurrentWeatherData(location)
+			.getCurrentWeather(city, cityId)
 			.then(data => console.log('current weather data:', data))
 			.catch(error => console.log(error));
 
 		weatherApi
-			.get5DaysWeatherData(location)
+			.get5DaysWeather(city, cityId)
 			.then(data => console.log('5 days weather data:', data))
 			.catch(error => console.log(error));
 	}
 
-	function onLocationInput(e) {
-		const locationInput = e.target;
-		const location = locationInput.value.toLowerCase();
+	function onCityInput(e) {
+		const cityInput = e.target;
+		const city = cityInput.value.toLowerCase();
+		if (!city) return;
+		storeTypedCity(city);
 
-		weatherApi.getCityData(location);
+		const cities = weatherApi.getCities(city);
+		dom.displaySuggestions(cities);
+	}
+
+	function storeTypedCity(val) {
+		sessionStorage.setItem('typedCityInputVal', val);
 	}
 
 	return {
+		getTypedCity,
 		init,
 		onFormSubmit,
-		onLocationInput,
+		onCityInput,
 	}
 })();

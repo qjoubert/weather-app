@@ -1,0 +1,20 @@
+body {
+	background-attachment: fixed;
+	background-position: center center;
+	background-repeat: no-repeat;
+	background-size: cover;
+}
+
+@media (orientation: landscape) {
+
+	body {
+		background-image: url('../assets/images/rainbow-l-land.jpg');
+	}
+}
+
+@media (orientation: portrait) {
+
+	body {
+		background-image: url('../assets/images/pink-clouds-l-port.jpg');
+	}
+}

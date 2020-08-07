@@ -3,36 +3,46 @@ import config from '../../config.js';
 
 export default (function() {
 
-	async function getCityData(location) {
-		if (!location) return;
-
+	function getCities(inputVal) {
 		const CITY_LIST = require('../assets/current.city.list.json');
-		const cities = CITY_LIST.filter(city => city.name.toLowerCase() == location);
-		if (cities.length > 0) {
-			cities.forEach(city => {				
-				const cityInfo = `${city.name}, ${city.country}`;
-				console.log(cityInfo);
-			});
+		const cities = [];
+
+		for (const city of CITY_LIST) {
+			if (city.name.toLowerCase() == inputVal) {
+				const sameCity = cities.find(c => {
+					return c.name == city.name && c.country == city.country;
+				});
+				if (sameCity) continue;
+				cities.push(city);
+			}
 		}
+
+		if (cities.length > 0) return cities;
+		else return null;
 	}
 
-	async function getCurrentWeatherData(location) {
-		const url = `https://api.openweathermap.org/data/2.5/weather?q=${location}&units=metric&appid=${config.API_KEY}`;
+	async function getCurrentWeather(city, cityId = null) {
+		const url = 
+			cityId ? `https://api.openweathermap.org/data/2.5/weather?id=${cityId}&units=metric&appid=${config.API_KEY}` : 
+			`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${config.API_KEY}`;
+
 		const response = await fetch(url, { mode: 'cors' });
-		const weatherData = await response.json();
-		return weatherData;
+		const weather = await response.json();
+		return weather;
 	}
 
-	async function get5DaysWeatherData(location) {
-		const url = `https://api.openweathermap.org/data/2.5/forecast?q=${location}&units=metric&appid=${config.API_KEY}`;
+	async function get5DaysWeather(city, cityId = null) {
+		const url = 
+			cityId ? `https://api.openweathermap.org/data/2.5/forecast?id=${cityId}&units=metric&appid=${config.API_KEY}` :
+			`https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=metric&appid=${config.API_KEY}`;
 		const response = await fetch(url, { mode: 'cors' });
-		const weatherData = await response.json();
-		return weatherData;
+		const weather = await response.json();
+		return weather;
 	}
 
 	return {
-		getCityData,
-		getCurrentWeatherData,
-		get5DaysWeatherData,
+		getCities,
+		getCurrentWeather,
+		get5DaysWeather,
 	}
 })();
