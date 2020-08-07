@@ -23,8 +23,8 @@ export default (function() {
 
 	async function getCurrentWeather(city, cityId = null) {
 		const url = 
-			cityId ? `https://api.openweathermap.org/data/2.5/weather?id=${cityId}&units=metric&appid=${config.API_KEY}` : 
-			`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${config.API_KEY}`;
+			cityId ? `https://api.openweathermap.org/data/2.5/weather?id=${cityId}&units=metric&lang=fr&appid=${config.API_KEY}` : 
+			`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&lang=fr&appid=${config.API_KEY}`;
 
 		const response = await fetch(url, { mode: 'cors' });
 		const weather = await response.json();
@@ -39,6 +39,11 @@ export default (function() {
 		const weather = await response.json();
 		return weather;
 	}
+
+	// async function getWeatherIcon(key) {
+	// 	const url = `http://openweathermap.org/img/wn/${key}@2x.png`;
+		
+	// }
 
 	return {
 		getCities,

@@ -15,7 +15,7 @@ export default (function() {
 		e.preventDefault();
 		storeTypedCity('');
 		const cityInput = e.target.firstElementChild;
-		const city = cityInput.value.toLowerCase();
+		const city = cityInput.value;
 		const cityId = cityInput.getAttribute('data-id');
 
 		cityInput.blur();
@@ -24,8 +24,10 @@ export default (function() {
 		dom.clearSuggestions();
 
 		weatherApi
-			.getCurrentWeather(city, cityId)
-			.then(data => console.log('current weather data:', data))
+			.getCurrentWeather(city.toLowerCase(), cityId)
+			.then(weatherData => {
+				dom.displayCurrentWeather(city, weatherData)
+			})
 			.catch(error => console.log(error));
 
 		weatherApi

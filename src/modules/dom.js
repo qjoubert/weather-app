@@ -1,4 +1,5 @@
 import app from './app';
+import formatter from './formatter';
 
 export default (function() {
 
@@ -24,6 +25,25 @@ export default (function() {
 
 		li.append(btn);
 		return li;
+	}
+
+	function displayCurrentWeather(city, weatherData) {
+		const container = document.querySelector('.current-weather-display');
+		const weather = weatherData.weather[0];
+		const main = weatherData.main;
+		const wind = weatherData.wind;
+
+		container.querySelector('.city-name').textContent = weatherData.name;
+		container.querySelector('.date').textContent = new Date().toLocaleDateString();
+		container.querySelector('.weather-description').textContent = weather.description;
+		container.querySelector('.weather-icon').src = `http://openweathermap.org/img/wn/${weather.icon}@2x.png`;
+		container.querySelector('.weather-icon').alt = 'an icon representing the current weather';
+		container.querySelector('.temperature').textContent = `${main.temp}°C`;
+		container.querySelector('.feels-like').textContent = `température ressentie: ${main.feels_like}°C`;
+		container.querySelector('.humidity').textContent = `humidité: ${main.humidity} %`;
+		container.querySelector('.pressure').textContent = `pression: ${main.pressure} hPa`;
+		container.querySelector('.wind-speed').textContent = `vitesse du vent: ${wind.speed} m/s`;
+		container.querySelector('.wind-direction').textContent = `direction du vent: ${formatter.windDegToText(wind.deg)}`;
 	}
 
 	function displaySuggestions(cities) {
@@ -95,12 +115,17 @@ export default (function() {
 				cityInput.setAttribute('data-id', '');
 			}
 		}
+	}
 
+	function updateBodyBg(className) {
+		document.body.classList.remove('clear-sky', '')
 	}
 
 	return {
 		clearSuggestions,
+		displayCurrentWeather,
 		displaySuggestions,
 		initEventListeners,
+		updateBodyBg,
 	}
 })();
